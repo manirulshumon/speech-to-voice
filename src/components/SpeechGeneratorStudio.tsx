@@ -14,8 +14,9 @@ import {
   FileText
 } from 'lucide-react';
 import { VOICES, VOICE_PRESETS, STYLE_PROMPTS } from '../data/voicesData';
-import { VoiceConfig, VoicePreset, GenerationHistoryItem } from '../types/voice';
+import { VoiceConfig, VoicePreset, GenerationHistoryItem, ElevenLabsVoiceSettings, DEFAULT_VOICE_SETTINGS } from '../types/voice';
 import { AudioWaveformPlayer } from './AudioWaveformPlayer';
+import { VoiceSettingsPanel } from './VoiceSettingsPanel';
 
 interface SpeechGeneratorStudioProps {
   onGenerated: (item: GenerationHistoryItem) => void;
@@ -40,13 +41,15 @@ export const SpeechGeneratorStudio: React.FC<SpeechGeneratorStudioProps> = ({
   const [modelType, setModelType] = useState<'gemini-3.8-flash-lite-tts' | 'gemini-3.8-flash-tts'>(
     'gemini-3.8-flash-lite-tts'
   );
+  const [voiceSettings, setVoiceSettings] = useState<ElevenLabsVoiceSettings>(DEFAULT_VOICE_SETTINGS);
+  const [lastGeneratedSettings, setLastGeneratedSettings] = useState<ElevenLabsVoiceSettings | null>(null);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successNotice, setSuccessNotice] = useState<boolean>(false);
 
   // Character counter
   const charCount = inputText.length;
-  const estimatedSeconds = Math.max(1, Math.round(charCount / 14));
+  const estimatedSeconds = Math.max(1, Math.round((charCount / 14) / voiceSettings.speed));
 
   const handleApplyPreset = (preset: VoicePreset) => {
     setInputText(preset.text);
@@ -74,7 +77,8 @@ export const SpeechGeneratorStudio: React.FC<SpeechGeneratorStudioProps> = ({
           style: stylePrompt.trim(),
           model: modelType,
           baseVoiceOverride: selectedVoice.baseVoice,
-          customStylePrompt: selectedVoice.tonePrompt
+          customStylePrompt: selectedVoice.tonePrompt,
+          settings: voiceSettings
         }),
       });
 
@@ -103,9 +107,11 @@ export const SpeechGeneratorStudio: React.FC<SpeechGeneratorStudioProps> = ({
         audioUrl,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         charCount: inputText.trim().length,
-        duration: estimatedSeconds
+        duration: estimatedSeconds,
+        settings: voiceSettings
       };
 
+      setLastGeneratedSettings(voiceSettings);
       onGenerated(historyItem);
       setSuccessNotice(true);
       setTimeout(() => setSuccessNotice(false), 3000);
@@ -246,6 +252,14 @@ export const SpeechGeneratorStudio: React.FC<SpeechGeneratorStudioProps> = ({
               </div>
             )}
 
+            {/* Voice Settings (Speed, Stability, Similarity, Style Exaggeration) */}
+            <div className="pt-2">
+              <VoiceSettingsPanel
+                settings={voiceSettings}
+                onChange={setVoiceSettings}
+              />
+            </div>
+
             {/* Action Bar */}
             <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-slate-800/80">
               <div className="flex items-center gap-2">
@@ -285,6 +299,8 @@ export const SpeechGeneratorStudio: React.FC<SpeechGeneratorStudioProps> = ({
                 voiceName={currentVoiceName}
                 title="Current Generated Voice Track"
                 autoPlay={true}
+                settings={lastGeneratedSettings || voiceSettings}
+                initialSpeed={lastGeneratedSettings?.speed || voiceSettings.speed}
               />
             </div>
           )}

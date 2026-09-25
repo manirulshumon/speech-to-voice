@@ -13,6 +13,20 @@ export interface VoiceConfig {
   tonePrompt?: string;
 }
 
+export interface ElevenLabsVoiceSettings {
+  speed: number;             // e.g. 0.70x to 1.50x, default: 1.00
+  stability: number;         // 0% - 100%, default: 50%
+  similarity: number;        // 0% - 100%, default: 75%
+  styleExaggeration: number; // 0% - 100%, default: 15%
+}
+
+export const DEFAULT_VOICE_SETTINGS: ElevenLabsVoiceSettings = {
+  speed: 1.0,
+  stability: 50,
+  similarity: 75,
+  styleExaggeration: 15
+};
+
 export interface GenerationHistoryItem {
   id: string;
   text: string;
@@ -23,6 +37,7 @@ export interface GenerationHistoryItem {
   timestamp: string;
   duration?: number;
   charCount: number;
+  settings?: ElevenLabsVoiceSettings;
 }
 
 export interface DialogueLine {

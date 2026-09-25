@@ -75,7 +75,7 @@ export const VoiceHistoryDrawer: React.FC<VoiceHistoryDrawerProps> = ({
                     <p className="text-xs font-semibold text-white truncate">
                       "{item.text}"
                     </p>
-                    <div className="flex items-center gap-2 text-[10px] text-slate-400 mt-0.5">
+                    <div className="flex flex-wrap items-center gap-2 text-[10px] text-slate-400 mt-0.5">
                       <span className="font-mono text-indigo-300">
                         Voice: {item.voice}
                       </span>
@@ -83,6 +83,11 @@ export const VoiceHistoryDrawer: React.FC<VoiceHistoryDrawerProps> = ({
                       <span>{item.charCount} chars</span>
                       <span>•</span>
                       <span className="text-slate-500">{item.timestamp}</span>
+                      {item.settings && (
+                        <span className="text-[9px] font-mono text-cyan-300 bg-cyan-950/60 px-1.5 py-0.2 rounded border border-cyan-800/50">
+                          {item.settings.speed.toFixed(2)}x • {item.settings.stability}% stb • {item.settings.similarity}% sim
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>

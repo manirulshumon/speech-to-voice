@@ -67,7 +67,8 @@ app.post('/api/tts/generate', async (req, res) => {
       model = 'gemini-3.8-flash-lite-tts',
       language = 'en-US',
       baseVoiceOverride,
-      customStylePrompt
+      customStylePrompt,
+      settings
     } = req.body;
 
     if (!text || typeof text !== 'string' || !text.trim()) {
@@ -88,6 +89,58 @@ app.post('/api/tts/generate', async (req, res) => {
       combinedStyle = style ? `${mapping.defaultStyle}. Direction: ${style}` : mapping.defaultStyle;
     } else if (style) {
       combinedStyle = style;
+    }
+
+    // Apply ElevenLabs Voice Settings (Speed, Stability, Similarity, Style Exaggeration)
+    if (settings) {
+      const acousticDirectives: string[] = [];
+      const speedVal = typeof settings.speed === 'number' ? settings.speed : 1.0;
+      const stabilityVal = typeof settings.stability === 'number' ? settings.stability : 50;
+      const similarityVal = typeof settings.similarity === 'number' ? settings.similarity : 75;
+      const exaggerationVal = typeof settings.styleExaggeration === 'number' ? settings.styleExaggeration : 15;
+
+      // 1. Pacing & Speed
+      if (speedVal >= 1.25) {
+        acousticDirectives.push('brisk and rapid-fire tempo with swift cadence');
+      } else if (speedVal >= 1.1) {
+        acousticDirectives.push('moderately upbeat and energetic tempo');
+      } else if (speedVal <= 0.8) {
+        acousticDirectives.push('slow, deliberate, measured cadence with solemn pauses');
+      } else if (speedVal <= 0.9) {
+        acousticDirectives.push('relaxed, unhurried, gentle cadence');
+      }
+
+      // 2. Stability (lower = more emotional/variable; higher = more consistent/uniform)
+      if (stabilityVal >= 80) {
+        acousticDirectives.push('exceptionally consistent and steady delivery with uniform tone and minimal variance');
+      } else if (stabilityVal >= 65) {
+        acousticDirectives.push('steady and reliable tone with smooth consistency');
+      } else if (stabilityVal <= 30) {
+        acousticDirectives.push('dynamic emotional variance, lively vocal fluctuations, and expressive inflection shifts');
+      } else if (stabilityVal <= 45) {
+        acousticDirectives.push('expressive delivery with dynamic cadence variations');
+      }
+
+      // 3. Similarity & Clarity
+      if (similarityVal >= 85) {
+        acousticDirectives.push('ultra-high acoustic clarity, crisp diction, pristine studio isolation and razor-sharp voice likeness');
+      } else if (similarityVal >= 70) {
+        acousticDirectives.push('clear studio articulation with high voice fidelity');
+      }
+
+      // 4. Style Exaggeration
+      if (exaggerationVal >= 60) {
+        acousticDirectives.push('theatrical, deeply passionate delivery with amplified emotional drama and heightened inflections');
+      } else if (exaggerationVal >= 30) {
+        acousticDirectives.push('vivid emotional color, emphasized character inflections, and expressive theatricality');
+      } else if (exaggerationVal <= 10) {
+        acousticDirectives.push('understated, naturalistic, understated organic delivery');
+      }
+
+      if (acousticDirectives.length > 0) {
+        const acousticNote = acousticDirectives.join(', ');
+        combinedStyle = combinedStyle ? `${combinedStyle}. Acoustic dynamics: ${acousticNote}` : acousticNote;
+      }
     }
 
     // Prepare speech parts
@@ -135,6 +188,7 @@ app.post('/api/tts/generate', async (req, res) => {
       baseVoice: resolvedBaseVoice,
       model: ttsModel,
       charCount: trimmedText.length,
+      settings: settings || { speed: 1.0, stability: 50, similarity: 75, styleExaggeration: 15 },
       timestamp: new Date().toISOString()
     });
   } catch (error: any) {

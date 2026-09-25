@@ -1,11 +1,14 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Play, Pause, RotateCcw, Download, Volume2, VolumeX } from 'lucide-react';
+import { Play, Pause, RotateCcw, Download, Volume2, VolumeX, Gauge } from 'lucide-react';
+import { ElevenLabsVoiceSettings } from '../types/voice';
 
 interface AudioWaveformPlayerProps {
   audioUrl: string;
   voiceName?: string;
   title?: string;
   autoPlay?: boolean;
+  settings?: ElevenLabsVoiceSettings;
+  initialSpeed?: number;
 }
 
 export const AudioWaveformPlayer: React.FC<AudioWaveformPlayerProps> = ({
@@ -13,6 +16,8 @@ export const AudioWaveformPlayer: React.FC<AudioWaveformPlayerProps> = ({
   voiceName,
   title,
   autoPlay = true,
+  settings,
+  initialSpeed = 1.0,
 }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -20,17 +25,28 @@ export const AudioWaveformPlayer: React.FC<AudioWaveformPlayerProps> = ({
   const [duration, setDuration] = useState<number>(0);
   const [volume, setVolume] = useState<number>(1);
   const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [playbackSpeed, setPlaybackSpeed] = useState<number>(settings?.speed || initialSpeed || 1.0);
 
   useEffect(() => {
+    const desiredSpeed = settings?.speed || initialSpeed || 1.0;
+    setPlaybackSpeed(desiredSpeed);
     setIsPlaying(false);
     setCurrentTime(0);
     if (audioRef.current) {
       audioRef.current.currentTime = 0;
+      audioRef.current.playbackRate = desiredSpeed;
       if (autoPlay) {
         audioRef.current.play().then(() => setIsPlaying(true)).catch(() => {});
       }
     }
-  }, [audioUrl, autoPlay]);
+  }, [audioUrl, autoPlay, settings?.speed, initialSpeed]);
+
+  const changeSpeed = (speed: number) => {
+    setPlaybackSpeed(speed);
+    if (audioRef.current) {
+      audioRef.current.playbackRate = speed;
+    }
+  };
 
   const togglePlay = () => {
     if (!audioRef.current) return;
@@ -96,7 +112,7 @@ export const AudioWaveformPlayer: React.FC<AudioWaveformPlayerProps> = ({
             <h4 className="text-xs sm:text-sm font-bold text-white truncate">
               {title || 'Synthesized Voice Track'}
             </h4>
-            <div className="flex items-center gap-2 text-[11px] text-slate-400">
+            <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-400">
               {voiceName && (
                 <span className="font-semibold text-indigo-400 font-mono">
                   Voice: {voiceName}
@@ -106,6 +122,22 @@ export const AudioWaveformPlayer: React.FC<AudioWaveformPlayerProps> = ({
               <span className="text-emerald-400 font-mono text-[10px] bg-emerald-500/10 px-1.5 py-0.2 rounded border border-emerald-500/20">
                 24kHz Gemini Studio
               </span>
+              {settings && (
+                <div className="flex flex-wrap items-center gap-1 text-[10px] font-mono">
+                  <span className="px-1.5 py-0.2 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
+                    Spd: {playbackSpeed.toFixed(2)}x
+                  </span>
+                  <span className="px-1.5 py-0.2 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
+                    Stab: {settings.stability}%
+                  </span>
+                  <span className="px-1.5 py-0.2 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
+                    Sim: {settings.similarity}%
+                  </span>
+                  <span className="px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">
+                    Exag: {settings.styleExaggeration}%
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -182,6 +214,24 @@ export const AudioWaveformPlayer: React.FC<AudioWaveformPlayerProps> = ({
           <span className="text-xs font-mono text-slate-400">
             {formatTime(currentTime)} / {formatTime(duration)}
           </span>
+
+          {/* Quick Speed Pills */}
+          <div className="hidden sm:flex items-center gap-1 bg-slate-950/70 p-1 rounded-lg border border-slate-800 ml-2">
+            {[0.8, 1.0, 1.25, 1.5].map((spd) => (
+              <button
+                key={spd}
+                type="button"
+                onClick={() => changeSpeed(spd)}
+                className={`px-1.5 py-0.5 rounded text-[10px] font-mono transition-colors ${
+                  Math.abs(playbackSpeed - spd) < 0.05
+                    ? 'bg-indigo-600 text-white font-bold'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                {spd}x
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Volume */}
