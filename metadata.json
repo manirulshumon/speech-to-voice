@@ -1,0 +1,6 @@
+{
+  "name": "VoxStudio - Speech & Voice AI Generator",
+  "description": "State-of-the-art speech to voice generator and voice synthesizer powered by Gemini TTS. Features studio-grade text-to-speech, custom voice style direction, multi-speaker dialogue podcast generator, and audio waveform player.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
