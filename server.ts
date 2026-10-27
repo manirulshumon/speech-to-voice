@@ -26,6 +26,18 @@ const ai = new GoogleGenAI({
 
 // Supported prebuilt Gemini TTS Voices & ElevenLabs / Cloned Models mapping
 export const VOICE_MAPPINGS: Record<string, { baseVoice: string; defaultStyle: string }> = {
+  'Marcus-Audiobook': {
+    baseVoice: 'Fenrir',
+    defaultStyle: 'With a timeless and articulate tone, Marcus is ideal for narrating both classic literature and modern non-fiction. Timeless cadence, clarity, composure, and warm dignified baritone',
+  },
+  'C9fbwSpEaejywLWx722Z': {
+    baseVoice: 'Fenrir',
+    defaultStyle: 'With a timeless and articulate tone, Marcus is ideal for narrating both classic literature and modern non-fiction. Timeless cadence, clarity, composure, and warm dignified baritone',
+  },
+  'cloned-C9fbwSpEaejywLWx722Z': {
+    baseVoice: 'Fenrir',
+    defaultStyle: 'With a timeless and articulate tone, Marcus is ideal for narrating both classic literature and modern non-fiction. Timeless cadence, clarity, composure, and warm dignified baritone',
+  },
   'Theo-Silk': {
     baseVoice: 'Fenrir',
     defaultStyle: 'Profoundly calm and grounding British gentleman narrator, low-register gentle baritone, slow-paced soothing cadence, peaceful, reassuring and intimate, maximum vocal stability and velvety warmth',
@@ -50,6 +62,14 @@ export const VOICE_MAPPINGS: Record<string, { baseVoice: string; defaultStyle: s
 };
 
 export const AVAILABLE_VOICES = [
+  { 
+    id: 'Marcus-Audiobook', 
+    name: 'Marcus - Classic Audiobook Narrator', 
+    gender: 'Male', 
+    description: 'Timeless, articulate classic literature and audiobook voice from ElevenLabs (C9fbwSpEaejywLWx722Z) with dignified composure and crystal-clear cadence.', 
+    isCloned: true, 
+    source: 'ElevenLabs Cloned' 
+  },
   { id: 'Theo-Silk', name: 'Theo Silk (ElevenLabs Calm British Narrator)', gender: 'Male', description: 'Profoundly calm and grounding British narrative voice with low-register gentle baritone.', isCloned: true, source: 'ElevenLabs Cloned' },
   { id: 'Chuck-Miller', name: 'Chuck Miller (ElevenLabs Deep, Raspy, American)', gender: 'Male', description: 'Deep, raspy, seasoned American baritone with gritty gravitas and authentic texture.', isCloned: true, source: 'ElevenLabs Preset' },
   { id: 'Adam-Storyteller', name: 'Adam (ElevenLabs Warm Storyteller)', gender: 'Male', description: 'Deep, warm, middle-aged narrative voice from ElevenLabs with soothing baritone.', isCloned: true, source: 'ElevenLabs Preset' },

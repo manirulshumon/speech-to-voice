@@ -2,6 +2,19 @@ import { VoiceConfig, VoicePreset } from '../types/voice';
 
 export const VOICES: VoiceConfig[] = [
   {
+    id: 'Marcus-Audiobook',
+    name: 'Marcus - Classic Audiobook Narrator',
+    gender: 'Male',
+    description: 'With a timeless and articulate tone, Marcus is ideal for narrating both classic literature and modern non-fiction. His cadence, clarity, and composure make him perfect for long-form listening experiences.',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
+    accent: 'Articulate Classic Narrator',
+    category: 'Storyteller',
+    isCloned: true,
+    source: 'ElevenLabs Cloned',
+    baseVoice: 'Fenrir',
+    tonePrompt: 'With a timeless and articulate tone, Marcus is ideal for narrating both classic literature and modern non-fiction. His cadence, clarity, and composure make him perfect for long-form listening experiences'
+  },
+  {
     id: 'Theo-Silk',
     name: 'Theo Silk (ElevenLabs Calm British Narrator)',
     gender: 'Male',
@@ -111,6 +124,14 @@ export const VOICES: VoiceConfig[] = [
 ];
 
 export const VOICE_PRESETS: VoicePreset[] = [
+  {
+    id: 'elevenlabs-marcus-audiobook',
+    title: 'Marcus - Classic Audiobook & Literature (ElevenLabs)',
+    text: 'In my younger and more vulnerable years, my father gave me some advice that I’ve been turning over in my mind ever since. "Whenever you feel like criticizing anyone," he told me, "just remember that all the people in this world haven’t had the advantages that you’ve had."',
+    recommendedVoice: 'Marcus-Audiobook',
+    style: 'Timeless and articulate tone, dignified composure, crystal-clear cadence, classic audiobook narrator',
+    tag: 'ElevenLabs'
+  },
   {
     id: 'elevenlabs-theo-silk-sleep',
     title: 'Theo Silk - Calm British Bedtime Story (ElevenLabs)',

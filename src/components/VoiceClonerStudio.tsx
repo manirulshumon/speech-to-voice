@@ -69,6 +69,14 @@ export const VoiceClonerStudio: React.FC<VoiceClonerStudioProps> = ({
 
   const archetypes = [
     {
+      id: 'marcus-classic-audiobook',
+      title: 'Marcus - Classic Audiobook Narrator (ElevenLabs)',
+      desc: 'With a timeless and articulate tone, Marcus is ideal for narrating classic literature and non-fiction with composure, clarity, and steady cadence.',
+      gender: 'Male',
+      base: 'Fenrir',
+      prompt: 'With a timeless and articulate tone, Marcus is ideal for narrating both classic literature and modern non-fiction. His cadence, clarity, and composure make him perfect for long-form listening experiences'
+    },
+    {
       id: 'theo-silk-calm',
       title: 'Theo Silk - Calm British Narrator (ElevenLabs)',
       desc: 'Profoundly calm, slow-paced, low-register gentle British voice engineered for maximum stability and soothing depth. Ideal for bedtime stories and documentaries.',
@@ -409,9 +417,17 @@ export const VoiceClonerStudio: React.FC<VoiceClonerStudioProps> = ({
               </button>
             </div>
 
-            {/* Quick Link Badge for Theo Silk */}
-            <div className="flex items-center gap-2 text-xs">
-              <span className="text-slate-400">Target Voice:</span>
+            {/* Quick Link Badges */}
+            <div className="flex flex-wrap items-center gap-2 text-xs">
+              <span className="text-slate-400">Featured Voices:</span>
+              <button
+                type="button"
+                onClick={() => setElevenLabsUrl('https://elevenlabs.io/voices/C9fbwSpEaejywLWx722Z')}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 font-mono text-[11px] transition-colors"
+              >
+                <span>Marcus - Classic Audiobook (C9fbwSpEaejywLWx722Z)</span>
+                <ExternalLink className="w-3 h-3 text-emerald-400" />
+              </button>
               <button
                 type="button"
                 onClick={() => setElevenLabsUrl('https://elevenlabs.io/voices/UmQN7jS1Ee8B1czsUtQh')}
